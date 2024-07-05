@@ -13,7 +13,7 @@ int customerMenu();
 char startMenu();
 void signUpMenu();
 bool signUpFunctionality(string usernameInput, string passwordInput, string roleInput);
-bool isUsernameAlreadySignedUp(string usernameInput);
+bool IsUsernameTaken(string usernameInput);
 
 string signInMenu();
 string signInFunctionality(string usernameInput, string passwordInput);
@@ -34,12 +34,28 @@ void printTotal(float total);
 bool IsPositiveValue(int value);
 bool IsValueBetweenOrEqual(int value, int lowerLimit, int higherLimit);
 
-string username[100];
-string password[100];
-string role[100];
+string usernames[100];
+string passwords[100];
+string roles[100];
 int credentialsCount = 0;
 
-string currentSignedInUser;
+string productNames[100];
+string productTypes[100];
+float productPrices[100];
+float productTaxes[100];
+int productQuantities[100];
+int productsCount = 0;
+
+string purchasedProductNames[100];
+string purchasedProductTypes[100];
+float purchasedProductPrices[100];
+float purchasedProductTaxes[100];
+int purchasedProductQuantities[100];
+float purchasedProductTotalPrices[100];
+
+int purchasedProductsCount = 0;
+
+string currentSignedInUser = "";
 int main()
 {
 
@@ -220,6 +236,7 @@ int main()
             }
             else if (signedInRole == "Customer")
             {
+
                 while (true)
                 {
                     system("cls");
@@ -434,22 +451,26 @@ void signUpMenu()
 }
 bool signUpFunctionality(string usernameInput, string passwordInput, string roleInput)
 {
-    if (isUsernameAlreadySignedUp(usernameInput))
+    if (IsUsernameTaken(usernameInput))
     {
         return false;
     }
-    username[credentialsCount] = usernameInput;
-    password[credentialsCount] = passwordInput;
-    role[credentialsCount] = roleInput;
+    addingCredentialsIntoArray(usernameInput, passwordInput, roleInput);
 
-    credentialsCount++;
     return true;
 }
-bool isUsernameAlreadySignedUp(string usernameInput)
+void addingCredentialsIntoArray(string usernameInput, string passwordInput, string roleInput)
+{
+    usernames[credentialsCount] = usernameInput;
+    passwords[credentialsCount] = passwordInput;
+    roles[credentialsCount] = roleInput;
+    credentialsCount++;
+}
+bool IsUsernameTaken(string usernameInput)
 {
     for (int i = 0; i < credentialsCount; i++)
     {
-        if (username[i] == usernameInput)
+        if (usernames[i] == usernameInput)
         {
             return true;
         }
@@ -483,15 +504,14 @@ string signInMenu()
     getch();
     return roleOfSignedInUser;
 }
-
 string signInFunctionality(string usernameInput, string passwordInput)
 {
     for (int i = 0; i < credentialsCount; i++)
     {
-        if (username[i] == usernameInput && password[i] == passwordInput)
+        if (usernames[i] == usernameInput && passwords[i] == passwordInput)
         {
-            currentSignedInUser = username[i];
-            return role[i];
+            currentSignedInUser = usernames[i];
+            return roles[i];
         }
     }
     return "";
@@ -518,16 +538,15 @@ void customerHeader()
     cout << " |                      |" << endl;
     cout << " ------------------------" << endl;
 }
-
 int adminMenu()
 {
     int option;
     cout << "Select one of the following options number..." << endl;
-    cout << "1. Add First Product Record" << endl;
-    cout << "2. Add Second Product Record" << endl;
-    cout << "3. Apply Discount" << endl;
-    cout << "4. Print Both Products Data" << endl;
-    cout << "5. Delete the data of a Product" << endl;
+    cout << "1. Add product" << endl;
+    cout << "2. Update product" << endl;
+    cout << "3. View all products " << endl;
+    cout << "4. View product by name" << endl;
+    cout << "5. Delete product" << endl;
     cout << "6. Exit" << endl;
     cout << "Your Option: ";
     cin >> option;
@@ -542,6 +561,125 @@ int customerMenu()
     cout << "Your Option: ";
     cin >> option;
     return option;
+}
+void addProductMenu()
+{
+
+    cout << "Enter product Name: ";
+    string productNameInput = nameInput();
+
+    if (!doesProductExist(productNameInput))
+    {
+
+        cout << "Enter product type: ";
+        string productTypeInput = nameInput();
+
+        cout << "Enter product Price: ";
+        float productPriceInput = priceInput();
+
+        cout << "Enter product Tax: ";
+        float productTaxInput = taxInput();
+
+        cout << "Enter product Quantity: ";
+        float productQuantityInput = quantityInput();
+
+        addProductIntoArray(productNameInput, productTypeInput, productPriceInput, productTaxInput, productQuantityInput);
+
+        cout << "Successfully Added Product!" << endl;
+    }
+    else
+    {
+        cout << "Error Adding Product!";
+        cout << endl;
+        cout << " Product Name already exists!" << endl;
+    }
+    cout << "Press any key to return" << endl;
+    getch();
+}
+void UpdateProductMenu()
+{
+
+    cout << "Enter product Name: ";
+    string productNameInput = nameInput();
+
+    int productIndex = getProductIndex(productNameInput);
+
+    if (productIndex != -1)
+    {
+
+        cout << "Enter product type: ";
+        string productTypeInput = nameInput();
+
+        cout << "Enter product Price: ";
+        float productPriceInput = priceInput();
+
+        cout << "Enter product Tax: ";
+        float productTaxInput = taxInput();
+
+        cout << "Enter product Quantity: ";
+        float productQuantityInput = quantityInput();
+
+        UpdateProductInArray(productIndex, productNameInput, productTypeInput, productPriceInput, productTaxInput, productQuantityInput);
+
+        cout << "Successfully Updated Product!" << endl;
+    }
+    else
+    {
+        cout << "Error Updating Product!";
+        cout << endl;
+        cout << " Product does not exists!" << endl;
+    }
+    cout << "Press any key to return" << endl;
+    getch();
+}
+bool AddProductFunctionality(string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput)
+{
+    if (doesProductExist(productNameInput))
+    {
+        return false;
+    }
+
+    return true;
+}
+bool doesProductExist(string productNameInput)
+{
+    for (int i = 0; i < productsCount; i++)
+    {
+        if (productNames[i] == productNameInput)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+int getProductIndex(string productNameInput)
+{
+    for (int i = 0; i < productsCount; i++)
+    {
+        if (productNames[i] == productNameInput)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+void addProductIntoArray(string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput)
+{
+    productNames[productsCount] = productNameInput;
+    productTypes[productsCount] = productTypeInput;
+    productPrices[productsCount] = productPriceInput;
+    productTaxes[productsCount] = productTaxInput;
+    productQuantities[productsCount] = productQuantityInput;
+
+    productsCount++;
+}
+void UpdateProductInArray(int index, string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput)
+{
+    productNames[index] = productNameInput;
+    productTypes[index] = productTypeInput;
+    productPrices[index] = productPriceInput;
+    productTaxes[index] = productTaxInput;
+    productQuantities[index] = productQuantityInput;
 }
 
 float calculateTotal(float price, float quantity, float taxPercentage)
