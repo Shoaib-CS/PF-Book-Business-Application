@@ -1,0 +1,5 @@
+Apple,Fruit,100,23,30,2952,Shoaib
+Apple,Fruit,100,23,2,246,Shoaib
+Strawberry,Fruit,50,10,48,2376,YouAreTheBest
+Potato,Vegetable,100,30,10,1300,Sumaira
+Apple,Fruit,100,23,10,1230,Sumaira

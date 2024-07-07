@@ -1,0 +1,4 @@
+Apple,Fruit,100,23,58
+Mango,Fruit,25,1,80
+Potato,Vegetable,100,30,90
+Strawberry,Fruit,50,10,42
