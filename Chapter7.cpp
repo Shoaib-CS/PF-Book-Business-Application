@@ -1,38 +1,63 @@
 #include <iostream>
 #include <conio.h>
+#include <limits>
+#include <string>
+#include <cctype>
 using namespace std;
 
 void header();
 void adminHeader();
 void customerHeader();
 
-int choiceMenu();
-int adminMenu();
-int customerMenu();
+char adminMenu();
+char customerMenu();
 
 char startMenu();
 void signUpMenu();
 bool signUpFunctionality(string usernameInput, string passwordInput, string roleInput);
 bool IsUsernameTaken(string usernameInput);
+void addingCredentialsIntoArray(string usernameInput, string passwordInput, string roleInput);
 
 string signInMenu();
 string signInFunctionality(string usernameInput, string passwordInput);
 
+void addProductMenu();
+void viewProductByNameMenu();
+void viewProductByNameFunctionality(int productIndex);
+void viewAllProductsMenu();
+void deleteProductMenu();
+void deleteProductFromArray(int indexToBeRemoved);
+void UpdateProductMenu();
+int getProductIndex(string productNameInput);
+void addProductIntoArray(string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput);
+void UpdateProductInArray(int index, string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput);
+
 float calculateTotal(float price, float quantity, float taxPercentage);
 float calculateTax(float price, float taxPercentage);
-void printAllProducts(string name1, float price1, int quantity1, float tax1, float total1, string name2, float price2, int quantity2, float tax2, float total2);
-void printProductData(string name, float price, float quantity, float taxPercentage, float total);
-float calculateDiscountedPrice(string day, string month, float amount);
+float calculateDiscountedPrice(float amount);
 
-int quantityInput();
+int quantityInput(int lowerLimit, int higherLimit);
 float priceInput();
-float taxInput();
+float taxInput(int lowerLimit, int higherLimit);
 string nameInput();
-
-void printTotal(float total);
+string typeInput();
+string usernameInput();
+string passwordInput();
+string roleInput();
 
 bool IsPositiveValue(int value);
+bool isAlphabetOnly(string input);
+bool isFirstAlphabetCapital(string input);
 bool IsValueBetweenOrEqual(int value, int lowerLimit, int higherLimit);
+bool isPositveIntegerOnly(string input);
+
+void buyProductMenu();
+string buyProductFunctionality(int productIndex, string name, string type, float price, float tax, int toBuyQuantity, float discountedPrice);
+void decreaseProductQuantity(int productIndex, int toBuyQuantity);
+void addPurchasedProductIntoArray(string name, string type, float price, float tax, int toBuyQuantity, float discountedPrice);
+
+void viewAllPurchasedProductsMenu();
+
 
 string usernames[100];
 string passwords[100];
@@ -52,6 +77,7 @@ float purchasedProductPrices[100];
 float purchasedProductTaxes[100];
 int purchasedProductQuantities[100];
 float purchasedProductTotalPrices[100];
+string purchasersUsernames[100];
 
 int purchasedProductsCount = 0;
 
@@ -101,128 +127,29 @@ int main()
                     system("cls");
                     header();
                     adminHeader();
-                    int option = adminMenu();
+                    char option = adminMenu();
 
-                    if (option == 1)
+                    if (option == '1')
                     {
-
-                        if (name1 == "")
-                        {
-
-                            name1 = nameInput();
-                            price1 = priceInput();
-                            quantity1 = quantityInput();
-                            tax1 = taxInput();
-                            total1 = calculateTotal(price1, quantity1, tax1);
-                            printTotal(total1);
-                        }
-                        else
-                        {
-                            cout << "Product already exists!" << endl;
-                        }
+                        addProductMenu();
                     }
-                    else if (option == 2)
+                    else if (option == '2')
                     {
-                        if (name2 == "")
-                        {
-
-                            name2 = nameInput();
-                            price2 = priceInput();
-                            quantity2 = quantityInput();
-                            tax2 = taxInput();
-                            total2 = calculateTotal(price2, quantity2, tax2);
-                            printTotal(total2);
-                        }
-                        else
-                        {
-                            cout << "Product already exists!" << endl;
-                        }
+                        UpdateProductMenu();
                     }
-                    else if (option == 3)
+                    else if (option == '3')
                     {
-                        string day = "";
-                        cout << "Enter the day: ";
-                        cin >> day;
-
-                        string month = "";
-                        cout << "Enter the month: ";
-                        cin >> month;
-
-                        if (name1 != "" && price1 != 0.0)
-                        {
-                            if (!isProduct1Discounted)
-                            {
-                                total1 = calculateDiscountedPrice(day, month, price1);
-                                cout << "Total for product 1 after discount: " << total1 << endl;
-                                isProduct1Discounted = true;
-                            }
-                            else
-                            {
-                                cout << "Discount is already applied on Product1 " << endl;
-                            }
-                        }
-                        else
-                        {
-                            cout << "Product1 is not entered yet" << endl;
-                        }
-                        if (name2 != "" && price2 != 0.0)
-                        {
-                            if (!isProduct2Discounted)
-                            {
-                                total2 = calculateDiscountedPrice(day, month, price2);
-                                cout << "Total for product 2 after discount: " << total2 << endl;
-                                isProduct2Discounted = true;
-                            }
-                            else
-                            {
-                                cout << "Discount is already applied on Product1 " << endl;
-                            }
-                        }
-                        else
-                        {
-                            cout << "Product1 is not entered yet" << endl;
-                        }
+                        viewAllProductsMenu();
                     }
-                    else if (option == 4)
+                    else if (option == '4')
                     {
-                        printAllProducts(name1, price1, quantity1, tax1, total1, name2, price2, quantity2, tax2, total2);
+                        viewProductByNameMenu();
                     }
-                    else if (option == 5)
+                    else if (option == '5')
                     {
-                        int option;
-                        cout << "Press 1 to delete the data of Product1 and delete 2 to clear the data of Product2..";
-                        cin >> option;
-
-                        /*Note that we are using the same variable name as in outside.
-                        It results that the variable option declared inside an if or other block statement
-                        will be accessible only in it's scope, and not outside.
-                        Also the variable outside this block will not be accessible in this block, only
-                        the inner variable of the same name will be accessible.
-
-                        If it seems confusing, don't worry! You can use some other variable name to prevent confusion
-                        Like instead of using option again you may use opt, but its better to learn this mechanism by practice
-                        */
-
-                        if (option == 1)
-                        {
-                            name1 = "";
-                            price1 = 0;
-                            quantity1 = 0;
-                            tax1 = 0;
-                            total1 = 0;
-                            isProduct1Discounted = false;
-                        }
-                        else if (option == 2)
-                        {
-                            name2 = "";
-                            price2 = 0;
-                            quantity2 = 0;
-                            tax2 = 0;
-                            total2 = 0;
-                            isProduct2Discounted = false;
-                        }
+                        deleteProductMenu();
                     }
-                    else if (option == 6)
+                    else if (option == '6')
                     {
                         break;
                     }
@@ -242,12 +169,20 @@ int main()
                     system("cls");
                     header();
                     customerHeader();
-                    int option = customerMenu();
-                    if (option == 1)
+                    char option = customerMenu();
+                    if (option == '1')
                     {
-                        printAllProducts(name1, price1, quantity1, tax1, total1, name2, price2, quantity2, tax2, total2);
+                        viewAllProductsMenu();
                     }
-                    if (option == 2)
+                    else if (option == '2')
+                    {
+                        buyProductMenu();
+                    }
+                    else if (option == '3')
+                    {
+                        viewAllProductsMenu();
+                    }
+                    else if(option=='4')
                     {
                         break;
                     }
@@ -274,89 +209,178 @@ int main()
     return 0;
 }
 
-void printAllProducts(string name1, float price1, int quantity1, float tax1, float total1, string name2, float price2, int quantity2, float tax2, float total2)
+int quantityInput(int lowerLimit, int higherLimit)
 {
-    cout << "Following products exist in the system:" << endl;
-    cout << "Name\tPrice\tQuantity\tTax%\tTotal" << endl;
-    printProductData(name1, price1, quantity1, tax1, total1);
-    printProductData(name2, price2, quantity2, tax2, total2);
-}
-void printTotal(float total)
-{
-    cout << "The total price is: " << total << endl;
-}
-
-int quantityInput()
-{
-    int input = 0;
+    string input = "";
     while (true)
     {
         cout << "Enter Quantity: ";
         cin >> input;
-        if (IsValueBetweenOrEqual(input, 0, 100))
+        if (isPositveIntegerOnly(input))
         {
-            break;
+            if (IsValueBetweenOrEqual(stoi(input), lowerLimit, higherLimit))
+            {
+                break;
+            }
         }
-        cout << "Invalid quantity! Please enter a number between 0 and 100" << endl;
+
+        cout << "Invalid quantity! Please enter a number between" + to_string(lowerLimit) + "and" + to_string(higherLimit) << endl;
         cout << "Enter any key to continue" << endl;
         getch();
     }
 
-    return input;
+    return stoi(input);
 }
 float priceInput()
 {
-    float input = 0;
+    string input = "";
     while (true)
     {
         cout << "Enter Price: ";
         cin >> input;
-        if (IsPositiveValue(input))
+        if (isPositveIntegerOnly(input))
         {
             break;
         }
-        cout << "Invalid Price! Please enter a positive price" << endl;
+        cout << "Invalid Price! Please enter a positive integer" << endl;
         cout << "Enter any key to continue" << endl;
         getch();
     }
 
-    return input;
+    return stoi(input); // converts string to int
 }
-float taxInput()
+bool isPositveIntegerOnly(string input)
 {
-    float input = 0;
+    for (int i = 0; i < input.length(); i++)
+    {
+        if (!isdigit(input[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+float taxInput(int lowerLimit, int higherLimit)
+{
+    string input = "";
     while (true)
     {
         cout << "Enter Tax Percentage: ";
         cin >> input;
-        if (IsValueBetweenOrEqual(input, 0, 50))
+        if (isPositveIntegerOnly(input))
         {
-            break;
+            if (IsValueBetweenOrEqual(stoi(input), lowerLimit, higherLimit))
+            {
+                break;
+            }
         }
-        cout << "Invalid quantity! Please enter a number between 0 and 50" << endl;
+
+        cout << "Invalid Tax Percentage! Please enter a number between" + to_string(lowerLimit) + "and" + to_string(higherLimit) << endl;
         cout << "Enter any key to continue" << endl;
         getch();
     }
 
-    return input;
+    return stoi(input);
 }
 string nameInput()
 {
-    string name;
+    string name = "";
     while (true)
     {
         cout << "Enter product name: ";
         cin >> name;
-        if (name != "")
+
+        if (name.length() >= 3 && isAlphabetOnly(name) && isFirstAlphabetCapital(name))
         {
             break;
         }
-        cout << "Invalid Name! Please enter a valid name" << endl;
-        cout << "Enter any key to continue" << endl;
-        getch();
+        cout << "Invalid name! Please enter a valid name (alphabets only,first letter capital, length is at least 3)" << endl;
     }
-
     return name;
+}
+string usernameInput()
+{
+    string username;
+    while (true)
+    {
+        cout << "Enter username: ";
+        cin >> username;
+
+        if (username.length() >= 3 && isAlphabetOnly(username) && isFirstAlphabetCapital(username))
+        {
+            break;
+        }
+        cout << "Invalid username! Please enter a valid userame (alphabets only,first letter capital, length is at least 3)" << endl;
+    }
+    return username;
+}
+string roleInput()
+{
+    string role = "";
+    while (true)
+    {
+        cout << "Enter Role (Admin or Customer): ";
+        cin >> role;
+
+        if (role == "Admin" || role == "Customer")
+        {
+            break;
+        }
+        cout << "Invalid role! Role can only be Admin or Customer" << endl;
+    }
+    return role;
+}
+string passwordInput()
+{
+    string password = "";
+    while (true)
+    {
+        cout << "Enter password: ";
+        cin >> password;
+
+        if (password.length() >= 3)
+        {
+            break;
+        }
+        cout << "Invalid password! Please enter a valid password (Length is at least 3)" << endl;
+    }
+    return password;
+}
+bool isFirstAlphabetCapital(string input)
+{
+    return isupper(input[0]);
+}
+bool isAlphabetOnly(string input)
+{
+    if (input.empty())
+    {
+        return false;
+    }
+    for (int i = 0; i < input.length(); i++)
+    {
+        if (!isalpha(input[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+string typeInput()
+{
+    string type = "";
+    while (true)
+    {
+        cout << "Enter product type: ";
+        cin >> type;
+
+        if (type.length() >= 3 && isAlphabetOnly(type))
+        {
+            break;
+        }
+        cout << "Invalid type! Please enter a valid type (alphabets only, length is at least 3)" << endl;
+    }
+    return type;
 }
 bool IsPositiveValue(int value)
 {
@@ -394,18 +418,7 @@ void header()
     cout << "|             ##   ##  ####     ####      ######   ######   #####   ##   ##     ##     ######   #####   ##   ##                      |" << endl;
     cout << "--------------------------------------------------------------------------------------------------------------------------------------" << endl;
 }
-int choiceMenu()
-{
-    int option;
-    cout << endl;
-    cout << "Select the choice of user..." << endl;
-    cout << "1. Admin" << endl;
-    cout << "2. Customer" << endl;
-    cout << "3. Exit." << endl;
-    cout << "Your Option: ";
-    cin >> option;
-    return option;
-}
+
 char startMenu()
 {
     char option;
@@ -425,18 +438,11 @@ char startMenu()
 }
 void signUpMenu()
 {
-    string usernameInput = "";
-    string passwordInput = "";
-    string roleInput = "";
+    string username = usernameInput();
+    string password = passwordInput();
+    string role = roleInput();
 
-    cout << "Enter Username: ";
-    cin >> usernameInput;
-    cout << "Enter Password: ";
-    cin >> passwordInput;
-    cout << "Enter Role: ";
-    cin >> roleInput;
-
-    if (signUpFunctionality(usernameInput, passwordInput, roleInput))
+    if (signUpFunctionality(username, password, role))
     {
         cout << "Successfully Sign Up!" << endl;
     }
@@ -477,18 +483,12 @@ bool IsUsernameTaken(string usernameInput)
     }
     return false;
 }
-
 string signInMenu()
 {
-    string usernameInput = "";
-    string passwordInput = "";
+    string username = usernameInput();
+    string password = passwordInput();
 
-    cout << "Enter Username: ";
-    cin >> usernameInput;
-    cout << "Enter Password: ";
-    cin >> passwordInput;
-
-    string roleOfSignedInUser = signInFunctionality(usernameInput, passwordInput);
+    string roleOfSignedInUser = signInFunctionality(username, password);
 
     if (roleOfSignedInUser != "")
     {
@@ -538,9 +538,8 @@ void customerHeader()
     cout << " |                      |" << endl;
     cout << " ------------------------" << endl;
 }
-int adminMenu()
+char adminMenu()
 {
-    int option;
     cout << "Select one of the following options number..." << endl;
     cout << "1. Add product" << endl;
     cout << "2. Update product" << endl;
@@ -549,39 +548,43 @@ int adminMenu()
     cout << "5. Delete product" << endl;
     cout << "6. Exit" << endl;
     cout << "Your Option: ";
-    cin >> option;
+    char option = getch();
+    cout << endl;
     return option;
 }
-int customerMenu()
+char customerMenu()
 {
-    int option;
     cout << "Select one of the following options number..." << endl;
     cout << "1. View All Products" << endl;
-    cout << "2. Exit" << endl;
+    cout << "2. Buy a product" << endl;
+    cout << "3. View bought products" << endl;
+    cout << "4. Exit" << endl;
     cout << "Your Option: ";
-    cin >> option;
+    char option = getch();
+    cout << endl;
     return option;
 }
 void addProductMenu()
 {
 
-    cout << "Enter product Name: ";
     string productNameInput = nameInput();
 
-    if (!doesProductExist(productNameInput))
+    //  string productNameInput="";
+    //     cout << "testttt";
+    //     cin >> productNameInput;
+
+    if (getProductIndex(productNameInput) == -1)
     {
 
-        cout << "Enter product type: ";
-        string productTypeInput = nameInput();
-
-        cout << "Enter product Price: ";
+        string productTypeInput = typeInput(); // test
+        // string productTypeInput="";
+        // cout << "testttt";
+        // cin >> productTypeInput;
         float productPriceInput = priceInput();
 
-        cout << "Enter product Tax: ";
-        float productTaxInput = taxInput();
+        float productTaxInput = taxInput(0, 50);
 
-        cout << "Enter product Quantity: ";
-        float productQuantityInput = quantityInput();
+        float productQuantityInput = quantityInput(1, 100);
 
         addProductIntoArray(productNameInput, productTypeInput, productPriceInput, productTaxInput, productQuantityInput);
 
@@ -593,31 +596,93 @@ void addProductMenu()
         cout << endl;
         cout << " Product Name already exists!" << endl;
     }
-    cout << "Press any key to return" << endl;
-    getch();
+}
+void viewProductByNameMenu()
+{
+
+    string productNameInput = nameInput();
+    int productIndex = getProductIndex(productNameInput);
+    if (productIndex != -1)
+    {
+        viewProductByNameFunctionality(productIndex);
+    }
+    else
+    {
+        cout << "Error Viewing Product!";
+        cout << endl;
+        cout << " Product does not exists!" << endl;
+    }
+}
+void viewProductByNameFunctionality(int productIndex)
+{
+    cout << "Name\t\tType\t\tPrice\t\tTax\t\tTotalQuantity" << endl;
+    cout << productNames[productIndex] << "\t\t"
+         << productTypes[productIndex] << "\t\t"
+         << productPrices[productIndex] << "\t\t"
+         << productTaxes[productIndex] << "\t\t"
+         << productQuantities[productIndex] << endl;
+}
+void viewAllProductsMenu()
+{
+    cout << "Name\t\tType\t\tPrice\t\tTax\t\tQuantity" << endl;
+
+    for (int i = 0; i < productsCount; i++)
+    {
+        cout << productNames[i] << "\t\t"
+             << productTypes[i] << "\t\t"
+             << productPrices[i] << "\t\t"
+             << productTaxes[i] << "\t\t"
+             << productQuantities[i] << endl;
+    }
+}
+void deleteProductMenu()
+{
+
+    string productNameInput = nameInput();
+    int productIndex = getProductIndex(productNameInput);
+    if (productIndex != -1)
+    {
+        deleteProductFromArray(productIndex);
+        cout << "Successfully deleted the Product!";
+        cout << endl;
+    }
+    else
+    {
+        cout << "Error deleting Product!";
+        cout << endl;
+        cout << " Product does not exists!" << endl;
+    }
+}
+void deleteProductFromArray(int indexToBeRemoved)
+{
+    for (int i = indexToBeRemoved; i < productsCount - 1; i++)
+    {
+        productNames[i] = productNames[i + 1];
+        productTypes[i] = productTypes[i + 1];
+        productPrices[i] = productPrices[i + 1];
+        productTaxes[i] = productTaxes[i + 1];
+        productQuantities[i] = productQuantities[i + 1];
+    }
+
+    productsCount--;
 }
 void UpdateProductMenu()
 {
-
-    cout << "Enter product Name: ";
     string productNameInput = nameInput();
 
     int productIndex = getProductIndex(productNameInput);
 
     if (productIndex != -1)
     {
+        viewProductByNameFunctionality(productIndex);
 
-        cout << "Enter product type: ";
-        string productTypeInput = nameInput();
+        string productTypeInput = typeInput();
 
-        cout << "Enter product Price: ";
         float productPriceInput = priceInput();
 
-        cout << "Enter product Tax: ";
-        float productTaxInput = taxInput();
+        float productTaxInput = taxInput(0, 50);
 
-        cout << "Enter product Quantity: ";
-        float productQuantityInput = quantityInput();
+        float productQuantityInput = quantityInput(1, 100);
 
         UpdateProductInArray(productIndex, productNameInput, productTypeInput, productPriceInput, productTaxInput, productQuantityInput);
 
@@ -629,28 +694,6 @@ void UpdateProductMenu()
         cout << endl;
         cout << " Product does not exists!" << endl;
     }
-    cout << "Press any key to return" << endl;
-    getch();
-}
-bool AddProductFunctionality(string productNameInput, string productTypeInput, float productPriceInput, float productTaxInput, float productQuantityInput)
-{
-    if (doesProductExist(productNameInput))
-    {
-        return false;
-    }
-
-    return true;
-}
-bool doesProductExist(string productNameInput)
-{
-    for (int i = 0; i < productsCount; i++)
-    {
-        if (productNames[i] == productNameInput)
-        {
-            return true;
-        }
-    }
-    return false;
 }
 int getProductIndex(string productNameInput)
 {
@@ -681,42 +724,113 @@ void UpdateProductInArray(int index, string productNameInput, string productType
     productTaxes[index] = productTaxInput;
     productQuantities[index] = productQuantityInput;
 }
-
 float calculateTotal(float price, float quantity, float taxPercentage)
 {
     float tax = calculateTax(price, taxPercentage);
     float total = (price + tax) * quantity;
     return total;
 }
-
 float calculateTax(float price, float taxPercentage)
 {
     return (price * taxPercentage) / 100;
 }
 
-void printProductData(string name, float price, float quantity, float taxPercentage, float total)
+float calculateDiscountedPrice(float amount)
 {
-    cout << name << "\t" << price << "\t" << quantity << "\t" << taxPercentage << "\t" << total << endl;
-}
-float calculateDiscountedPrice(string day, string month, float amount)
-{
-    /* “Store Policy is to give a 20% discount on the total purchase amount
-    on every Sunday and Month is October, March and August and 10% discount on the
-    total purchase amount of every Monday of November and December, else apply discount
-    of 5% .This can be done using the complex if else if and logical operators.*/
 
-    float payable = amount;
-    if (day == "Sunday" && (month == "October" || month == "March" || month == "August"))
+    if (amount >= 3000)
     {
-        payable = amount - (amount * 20) / 100;
+        return (amount * 80) / 100;
     }
-    else if (day == "Monday" && (month == "November" || month == "December"))
+    else if (amount >= 2000)
     {
-        payable = amount - (amount * 10) / 100;
+        return (amount * 90) / 100;
+    }
+    return amount;
+}
+void buyProductMenu()
+{
+    string productNameInput = nameInput();
+
+    int productIndex = getProductIndex(productNameInput);
+
+    if (productIndex != -1)
+    {
+        viewProductByNameFunctionality(productIndex);
+
+        string type = productTypes[productIndex];
+        int availableQuantity = productQuantities[productIndex];
+        float initalPrice = productPrices[productIndex];
+        float tax = productTaxes[productIndex];
+
+        int toBuyQuantity = quantityInput(1, availableQuantity);
+        float total = calculateTotal(initalPrice, toBuyQuantity, tax);
+        float discountedPrice = calculateDiscountedPrice(total);
+
+        cout << endl;
+        cout << "Price with tax: " << total << endl;
+        cout << "Final Price with discount: " << discountedPrice << endl;
+
+        cout << "Press 1 to comfirm purchase, any other key to cancel";
+        char input = getch();
+        if (input == '1')
+        {
+            cout << endl;
+            cout << buyProductFunctionality(productIndex, productNameInput, type, initalPrice, tax, toBuyQuantity, discountedPrice);
+            cout << endl;
+        }
+        else
+        {
+            cout << endl;
+            cout << "Purchase Cancelled!";
+            cout<<endl;
+        }
     }
     else
     {
-        payable = amount - (amount * 5) / 100;
+        cout << "Error buying Product!";
+        cout << endl;
+        cout << " Product does not exists!" << endl;
     }
-    return payable;
+}
+string buyProductFunctionality(int productIndex, string name, string type, float price, float tax, int toBuyQuantity, float discountedPrice)
+{
+    decreaseProductQuantity(productIndex, toBuyQuantity);
+    addPurchasedProductIntoArray(name, type, price, tax, toBuyQuantity, discountedPrice);
+
+    return "Product bought successfully!";
+}
+void decreaseProductQuantity(int productIndex, int toBuyQuantity)
+{
+    productQuantities[productIndex] = productQuantities[productIndex] - toBuyQuantity; // decreasing quantity from original products array.
+}
+void addPurchasedProductIntoArray(string name, string type, float price, float tax, int toBuyQuantity, float discountedPrice)
+{
+    purchasedProductNames[purchasedProductsCount] = name;
+    purchasedProductTypes[purchasedProductsCount] = type;
+    purchasedProductPrices[purchasedProductsCount] = price;
+    purchasedProductTaxes[purchasedProductsCount] = tax;
+    purchasedProductQuantities[purchasedProductsCount] = toBuyQuantity;
+    purchasedProductTotalPrices[purchasedProductsCount] = discountedPrice;
+
+    purchasersUsernames[purchasedProductsCount] = currentSignedInUser;
+
+    purchasedProductsCount++;
+}
+void viewAllPurchasedProductsMenu()
+{
+    cout << "Name\t\tType\t\tPrice\t\tTax\t\tBoughtQuantity\t\tFinalPrice" << endl;
+
+    for (int i = 0; i < purchasedProductsCount; i++)
+    {
+        if (purchasersUsernames[purchasedProductsCount] == currentSignedInUser)
+        {
+            cout << purchasedProductNames[i] << "\t\t"
+                 << purchasedProductTypes[i] << "\t\t"
+                 << purchasedProductPrices[i] << "\t\t"
+                 << purchasedProductTaxes[i] << "\t\t"
+                 << purchasedProductQuantities[i] << "\t\t"
+                 << purchasedProductTotalPrices[i] << endl;
+        }
+    }
 }
