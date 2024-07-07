@@ -58,6 +58,7 @@ void addPurchasedProductIntoArray(string name, string type, float price, float t
 
 void viewAllPurchasedProductsMenu();
 
+bool isProductPurchased(string name);
 
 string usernames[100];
 string passwords[100];
@@ -182,7 +183,7 @@ int main()
                     {
                         viewAllProductsMenu();
                     }
-                    else if(option=='4')
+                    else if (option == '4')
                     {
                         break;
                     }
@@ -642,9 +643,16 @@ void deleteProductMenu()
     int productIndex = getProductIndex(productNameInput);
     if (productIndex != -1)
     {
-        deleteProductFromArray(productIndex);
-        cout << "Successfully deleted the Product!";
-        cout << endl;
+        if (!isProductPurchased(productNameInput))
+        {
+            deleteProductFromArray(productIndex);
+        }
+        else
+        {
+            cout << "Error deleting Product!";
+            cout << endl;
+            cout << " Product already purchased!" << endl;
+        }
     }
     else
     {
@@ -783,7 +791,7 @@ void buyProductMenu()
         {
             cout << endl;
             cout << "Purchase Cancelled!";
-            cout<<endl;
+            cout << endl;
         }
     }
     else
@@ -832,5 +840,16 @@ void viewAllPurchasedProductsMenu()
                  << purchasedProductQuantities[i] << "\t\t"
                  << purchasedProductTotalPrices[i] << endl;
         }
+    }
+}
+bool isProductPurchased(string name)
+{
+    for (int i = 0; i < purchasedProductsCount; i++)
+    {
+        if (purchasedProductNames[i] == name)
+        {
+            return true;
+        }
+        return false;
     }
 }
