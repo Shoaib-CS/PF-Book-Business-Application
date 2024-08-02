@@ -74,7 +74,6 @@ main()
         }
         cout << "Press any Key to Continue: ";
         getch();
-        
     }
 }
 void header()
@@ -97,7 +96,6 @@ void header()
     cout << "|             ##   ##   ##       ##       ##  ##     ##    ##   ##  ##   ##     ##       ##    ##   ##  ##   ##                      |" << endl;
     cout << "|             ##   ##  ####     ####      ######   ######   #####   ##   ##     ##     ######   #####   ##   ##                      |" << endl;
     cout << "--------------------------------------------------------------------------------------------------------------------------------------" << endl;
-
 }
 float calculateTotal(float price, float quantity, float taxPercentage)
 {

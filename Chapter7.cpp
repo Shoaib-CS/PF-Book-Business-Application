@@ -25,6 +25,7 @@ void addProductMenu();
 void viewProductByNameMenu();
 void viewProductByNameFunctionality(int productIndex);
 void viewAllProductsMenu();
+void viewAllProductsMenuForCustomer();
 void deleteProductMenu();
 void deleteProductFromArray(int indexToBeRemoved);
 void UpdateProductMenu();
@@ -173,7 +174,7 @@ int main()
                     char option = customerMenu();
                     if (option == '1')
                     {
-                        viewAllProductsMenu();
+                        viewAllProductsMenuForCustomer();
                     }
                     else if (option == '2')
                     {
@@ -181,7 +182,7 @@ int main()
                     }
                     else if (option == '3')
                     {
-                        viewAllProductsMenu();
+                        viewAllPurchasedProductsMenu();
                     }
                     else if (option == '4')
                     {
@@ -225,7 +226,7 @@ int quantityInput(int lowerLimit, int higherLimit)
             }
         }
 
-        cout << "Invalid quantity! Please enter a number between" + to_string(lowerLimit) + "and" + to_string(higherLimit) << endl;
+        cout << "Invalid quantity! Please enter a number between " <<lowerLimit<< " and " << higherLimit << endl;
         cout << "Enter any key to continue" << endl;
         getch();
     }
@@ -276,7 +277,7 @@ float taxInput(int lowerLimit, int higherLimit)
             }
         }
 
-        cout << "Invalid Tax Percentage! Please enter a number between" + to_string(lowerLimit) + "and" + to_string(higherLimit) << endl;
+        cout << "Invalid Tax Percentage! Please enter a number between " << lowerLimit <<" and " <<higherLimit << endl;
         cout << "Enter any key to continue" << endl;
         getch();
     }
@@ -349,7 +350,11 @@ string passwordInput()
 }
 bool isFirstAlphabetCapital(string input)
 {
-    return isupper(input[0]);
+    if(isupper(input[0]))
+    {
+        return true;
+    }
+    return false;
 }
 bool isAlphabetOnly(string input)
 {
@@ -629,11 +634,30 @@ void viewAllProductsMenu()
 
     for (int i = 0; i < productsCount; i++)
     {
+        
         cout << productNames[i] << "\t\t"
              << productTypes[i] << "\t\t"
              << productPrices[i] << "\t\t"
              << productTaxes[i] << "\t\t"
              << productQuantities[i] << endl;
+    }
+}
+void viewAllProductsMenuForCustomer()
+{
+    cout << "Name\t\tType\t\tPrice\t\tTax\t\tQuantity" << endl;
+
+    for (int i = 0; i < productsCount; i++)
+    {
+        if(productQuantities[i]>0)
+        {
+
+
+        cout << productNames[i] << "\t\t"
+             << productTypes[i] << "\t\t"
+             << productPrices[i] << "\t\t"
+             << productTaxes[i] << "\t\t"
+             << productQuantities[i] << endl;
+        }
     }
 }
 void deleteProductMenu()
@@ -646,6 +670,8 @@ void deleteProductMenu()
         if (!isProductPurchased(productNameInput))
         {
             deleteProductFromArray(productIndex);
+            cout << "Product deleted!"<<endl;
+
         }
         else
         {
@@ -762,7 +788,7 @@ void buyProductMenu()
 
     int productIndex = getProductIndex(productNameInput);
 
-    if (productIndex != -1)
+    if (productIndex != -1 &&productQuantities[productIndex]>0)
     {
         viewProductByNameFunctionality(productIndex);
 
@@ -779,7 +805,7 @@ void buyProductMenu()
         cout << "Price with tax: " << total << endl;
         cout << "Final Price with discount: " << discountedPrice << endl;
 
-        cout << "Press 1 to comfirm purchase, any other key to cancel";
+        cout << "Press 1 to confirm purchase, any other key to cancel";
         char input = getch();
         if (input == '1')
         {
@@ -805,7 +831,6 @@ string buyProductFunctionality(int productIndex, string name, string type, float
 {
     decreaseProductQuantity(productIndex, toBuyQuantity);
     addPurchasedProductIntoArray(name, type, price, tax, toBuyQuantity, discountedPrice);
-
     return "Product bought successfully!";
 }
 void decreaseProductQuantity(int productIndex, int toBuyQuantity)
@@ -831,7 +856,7 @@ void viewAllPurchasedProductsMenu()
 
     for (int i = 0; i < purchasedProductsCount; i++)
     {
-        if (purchasersUsernames[purchasedProductsCount] == currentSignedInUser)
+        if (purchasersUsernames[i] == currentSignedInUser)
         {
             cout << purchasedProductNames[i] << "\t\t"
                  << purchasedProductTypes[i] << "\t\t"

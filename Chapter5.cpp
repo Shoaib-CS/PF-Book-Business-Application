@@ -68,14 +68,15 @@ int main()
             cin >> day;
 
             string month = "";
-            cout << "Enter the moth: ";
+            cout << "Enter the month: ";
             cin >> month;
-            
+
             if (name1 != "" && price1 != 0.0)
             {
                 if (!isProduct1Discounted)
                 {
-                    total1 = calculateDiscountedPrice(day, month, price1);
+                    int temp = calculateDiscountedPrice(day, month, price1);
+                    total1 = calculateTotal(temp, quantity1, tax1);
                     cout << "Total for product 1 after discount: " << total1 << endl;
                     isProduct1Discounted = true;
                 }
@@ -92,7 +93,8 @@ int main()
             {
                 if (!isProduct2Discounted)
                 {
-                    total2 = calculateDiscountedPrice(day, month, price2);
+                    int temp = calculateDiscountedPrice(day, month, price2);
+                    total2 = calculateTotal(temp, quantity2, tax2);
                     cout << "Total for product 2 after discount: " << total2 << endl;
                     isProduct2Discounted = true;
                 }
@@ -109,7 +111,7 @@ int main()
         else if (option == 4)
         {
             cout << "Following products exist in the system:" << endl;
-            cout << "Name\tPrice\tQuantity\tTax%\tTotal" << endl;
+            cout << "Name\tPrice\tQnt\tTax%\tTotal" << endl;
             printProductData(name1, price1, quantity1, tax1, total1);
             printProductData(name2, price2, quantity2, tax2, total2);
         }
@@ -137,13 +139,11 @@ int main()
                 tax1 = 0;
                 total1 = 0;
                 isProduct1Discounted = false;
-
-
             }
             else if (option == 2)
             {
                 name2 = "";
-                price2= 0;
+                price2 = 0;
                 quantity2 = 0;
                 tax2 = 0;
                 total2 = 0;

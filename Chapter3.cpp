@@ -70,7 +70,7 @@ main()
         {
             cout << "Following Products Exist in the System" << endl;
         
-            cout << "Name"<< "\t"<< "Price "<< "\t"<< "Quantity"<< "\t"<< "Tax %"<< "\t"<< "total" << endl;
+            cout << "Name"<< "\t"<< "Price "<< "\t"<< "Qnt"<< "\t"<< "Tax %"<< "\t"<< "total" << endl;
             printProductData(name1, price1, quantity1, tax1, total1);
             printProductData(name2, price2, quantity2, tax2, total2);
         }

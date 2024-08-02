@@ -25,6 +25,7 @@ void addProductMenu();
 void viewProductByNameMenu();
 void viewProductByNameFunctionality(int productIndex);
 void viewAllProductsMenu();
+void viewAllProductsMenuForCustomer();
 void deleteProductMenu();
 void deleteProductFromArray(int indexToBeRemoved);
 void UpdateProductMenu();
@@ -60,6 +61,7 @@ bool isProductPurchased(string name);
 void viewAllPurchasedProductsMenu();
 
 string getField(string record, int field);
+
 bool loadCredentialsFromFile();
 bool writeCredentialsToFile(string username, string password, string role);
 bool loadProductsFromFile();
@@ -183,7 +185,7 @@ int main()
                     char option = customerMenu();
                     if (option == '1')
                     {
-                        viewAllProductsMenu();
+                        viewAllProductsMenuForCustomer();
                     }
                     else if (option == '2')
                     {
@@ -645,6 +647,24 @@ void viewAllProductsMenu()
              << productQuantities[i] << endl;
     }
 }
+void viewAllProductsMenuForCustomer()
+{
+    cout << "Name\t\tType\t\tPrice\t\tTax\t\tQuantity" << endl;
+
+    for (int i = 0; i < productsCount; i++)
+    {
+        if(productQuantities[i]>0)
+        {
+
+
+        cout << productNames[i] << "\t\t"
+             << productTypes[i] << "\t\t"
+             << productPrices[i] << "\t\t"
+             << productTaxes[i] << "\t\t"
+             << productQuantities[i] << endl;
+        }
+    }
+}
 void deleteProductMenu()
 {
 
@@ -792,7 +812,7 @@ void buyProductMenu()
 
     int productIndex = getProductIndex(productNameInput);
 
-    if (productIndex != -1)
+    if (productIndex != -1 && (productQuantities[productIndex]>0))
     {
         viewProductByNameFunctionality(productIndex);
 
@@ -887,6 +907,7 @@ void viewAllPurchasedProductsMenu()
         }
     }
 }
+
 bool isProductPurchased(string name)
 {
     for (int i = 0; i < purchasedProductsCount; i++)
